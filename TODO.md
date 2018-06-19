@@ -11,3 +11,6 @@ Los volumenes se crean automaticamente sobre `/var/lib/docker/volumes` y ambos s
 /var/lib/docker/volumes/9876f78c2803e180a52ca2c0533611b15ab8b003b672bfd583df60ef8960209e/_data /var/lib/docker/volumes/4cc0271d3c47613f77547faab4a57b2f92e8905a89b5fa3e1eb4f029dbaa7671/_data
 ```
   - Comprobar si se llaman '_data' y añadir un '01', '02', etc (?)
+
+
+* [ ] Reordenar código para que sea más legible (usage arriba y añadido al /?)
