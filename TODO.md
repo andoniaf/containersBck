@@ -14,3 +14,9 @@ Los volumenes se crean automaticamente sobre `/var/lib/docker/volumes` y ambos s
 
 
 * [ ] Reordenar código para que sea más legible (usage arriba y añadido al /?)
+
+
+* [ ] Añadir opción para solo hacer backup de los volumenes de un container
+
+
+* [ ] Revisar el comando `docker save`, aunque el output se rediriga a *.tar.gz se genera solo un tar, hay que añadir a parte la compresión

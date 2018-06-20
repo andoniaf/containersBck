@@ -17,9 +17,14 @@ usage() {
 }
 
 targzDir() {
+  numVol=0
   for vol in $vols;do
+    if [ $(basename $vol) == "_data" ];then
+      vol=${vol}_$numVol
+      numVol=$(($numVol+1))
+    fi
     tarName="$(basename $vol)Vol-${conName}_${timestamp}.tar.gz"
-    tar -zcf $bckDir/$tarName $vol
+    echo "tar -zcf $bckDir/$tarName $vol"
     echo "Se ha creado el $tarName en $bckDir"
   done
 }
@@ -58,7 +63,7 @@ done
 if [ $conName ];then
   echo "Container $conName seleccionado..."
   echo
-  echo "Creando imagen del estado actual del container"
+  echo "Creando imagen del estado actual del container:"
   docker commit $conName ${conName}:$timestamp
   echo
 
