@@ -3,9 +3,10 @@
 # Script para backup de contenedores Docker
 
 bckDir="/backups"
-timestamp=$(date +%Y%m%d_%H%M%S)
 # Ver 'man date' para consultar el formato de los modificadores de fecha
 bckRetention="10 days ago"
+
+timestamp=$(date +%Y%m%d_%H%M%S)
 
 usage() {
   echo "
