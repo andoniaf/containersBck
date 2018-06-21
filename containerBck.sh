@@ -20,11 +20,13 @@ targzDir() {
   numVol=0
   for vol in $vols;do
     if [ $(basename $vol) == "_data" ];then
-      vol=${vol}_$numVol
+      volName=${vol}_$numVol
       numVol=$(($numVol+1))
+    else
+      volName=${vol}
     fi
-    tarName="$(basename $vol)Vol-${conName}_${timestamp}.tar.gz"
-    echo "tar -zcf $bckDir/$tarName $vol"
+    tarName="$(basename $volName)Vol-${conName}_${timestamp}.tar.gz"
+    tar -zcf $bckDir/$tarName $vol
     echo "Se ha creado el $tarName en $bckDir"
   done
 }
@@ -68,7 +70,8 @@ if [ $conName ];then
   echo
 
   echo "Guardando imagen como .tar.gz"
-  docker save --output=$bckDir/${conName}_${timestamp}.tar.gz ${conName}:$timestamp
+  docker save --output=$bckDir/${conName}_${timestamp}.tar ${conName}:$timestamp
+  gzip -9 $bckDir/${conName}_${timestamp}.tar
 else
   usage
   exit 1
