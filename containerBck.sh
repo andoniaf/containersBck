@@ -20,7 +20,7 @@ usage() {
 targzDir() {
   numVol=0
   for vol in $vols;do
-    if [ $(basename $vol) == "_data" ];then
+    if [ "$(basename $vol)" == "_data" ];then
       volName=${vol}_$numVol
       numVol=$(($numVol+1))
     else
