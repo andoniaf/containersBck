@@ -29,7 +29,7 @@ targzDir() {
     fi
     tarName="$(basename $volName)Vol-${conName}_${timestamp}.tar.gz"
     tar -zcf $bckDir/$tarName $vol
-    echo "Se ha creado el $tarName en $bckDir"
+    echo -e "\nSe ha creado el $tarName en $bckDir"
   done
 }
 
@@ -45,7 +45,7 @@ while getopts ":n:oav:" opt; do
     a)
       bckVolumes() {
         vols=$(docker inspect -f '{{ range .Mounts }}{{ .Source }} {{ end }}' $conName)
-        echo "Realizando backup de todos los volumenes montados: $vols"
+        echo "Backup de todos los volumenes montados: $vols"
         targzDir
       }
       bckVol=True
@@ -53,14 +53,13 @@ while getopts ":n:oav:" opt; do
     v)
       vols=$OPTARG
       bckVolumes() {
-        echo "Realizando backup de los siguientes volumenes: $vols"
+        echo "Backup de los siguientes volumenes: $vols"
         targzDir
       }
       bckVol=True
       ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
-      echo
+      echo -e "Invalid option: -$OPTARG \n" >&2
       usage
       exit 2
       ;;
@@ -68,8 +67,7 @@ while getopts ":n:oav:" opt; do
 done
 
 if [ $conName ];then
-  echo "Container $conName seleccionado..."
-  echo
+  echo -e "Container $conName seleccionado...\n"
 else
   usage
   exit 1
@@ -83,6 +81,8 @@ if [ ! $onlyVol ];then
   echo "Guardando imagen como .tar.gz"
   docker save --output=$bckDir/${conName}_${timestamp}.tar ${conName}:$timestamp
   gzip -9 $bckDir/${conName}_${timestamp}.tar
+else
+  echo -e "Realizando backup unicamente de los volumenes...\n"
 fi
 
 if [ $bckVol ];then bckVolumes;fi
