@@ -67,7 +67,7 @@ while getopts ":n:oav:" opt; do
 done
 
 if [ $conName ];then
-  echo -e "Container $conName seleccionado...\n"
+  echo -e "Container \e[31m$conName\e[0m seleccionado...\n"
 else
   usage
   exit 1
