@@ -12,9 +12,9 @@ usage() {
   echo "
     Usage: $0 -n nombreContainer [-o|-a|-v \"vol1 vol2\"]
 
-      -o   Solo backup de los volumenes
-      -a   Backup de todos los volumnes del contenedor
-      -v   Backup de los volumenes indicados (entrecomillados.
+      -o   Solo backup de los volumenes.
+      -a   Backup de todos los volumnes del contenedor.
+      -v   Backup de los volumenes indicados (entrecomillados).
   "
 }
 
