@@ -10,8 +10,9 @@ timestamp=$(date +%Y%m%d_%H%M%S)
 
 usage() {
   echo "
-    Usage: $0 -n nombreContainer [-a|-v \"vol1 vol2\"]
+    Usage: $0 -n nombreContainer [-o|-a|-v \"vol1 vol2\"]
 
+      -o   Solo backup de los volumenes
       -a   Backup de todos los volumnes del contenedor
       -v   Backup de los volumenes indicados (entrecomillados.
   "
@@ -33,10 +34,13 @@ targzDir() {
 }
 
 
-while getopts ":n:av:" opt; do
+while getopts ":n:oav:" opt; do
   case $opt in
     n)
       conName=$OPTARG
+      ;;
+    o)
+      onlyVol=True
       ;;
     a)
       bckVolumes() {
@@ -66,6 +70,12 @@ done
 if [ $conName ];then
   echo "Container $conName seleccionado..."
   echo
+else
+  usage
+  exit 1
+fi
+
+if [ ! $onlyVol ];then
   echo "Creando imagen del estado actual del container:"
   docker commit $conName ${conName}:$timestamp
   echo
@@ -73,9 +83,6 @@ if [ $conName ];then
   echo "Guardando imagen como .tar.gz"
   docker save --output=$bckDir/${conName}_${timestamp}.tar ${conName}:$timestamp
   gzip -9 $bckDir/${conName}_${timestamp}.tar
-else
-  usage
-  exit 1
 fi
 
 if [ $bckVol ];then bckVolumes;fi
