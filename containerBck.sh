@@ -81,8 +81,9 @@ fi
 if [ $bckVol ];then bckVolumes;fi
 
 # Borrado de imagenes antiguas
-for tag in $(docker images --filter=reference="$conName:*" --format 'table {{.Tag}}' | tail -n +2 | tr -d '_');do
-  if [ $(date +%Y%m%d%H%M%S --date="$bckRetention") -ge $tag ];then
+for tag in $(docker images --filter=reference="$conName:*" --format 'table {{.Tag}}' | tail -n +2 );do
+  tagdate=$(echo $tag |tr -d '_')
+  if [ $(date +%Y%m%d%H%M%S --date="$bckRetention") -ge $tagdate ];then
     echo "Borrando imagen: $conName:$tag"
     docker rmi $conName:$tag
   fi
