@@ -10,10 +10,11 @@ timestamp=$(date +%Y%m%d_%H%M%S)
 
 usage() {
   echo "
-    Usage: $0 -n nombreContainer [-a|-v \"vol1 vol2\"]
+    Usage: $0 -n nombreContainer [-o|-a|-v \"vol1 vol2\"]
 
-      -a   Backup de todos los volumnes del contenedor
-      -v   Backup de los volumenes indicados (entrecomillados.
+      -o   Solo backup de los volumenes.
+      -a   Backup de todos los volumnes del contenedor.
+      -v   Backup de los volumenes indicados (entrecomillados).
   "
 }
 
@@ -28,20 +29,23 @@ targzDir() {
     fi
     tarName="$(basename $volName)Vol-${conName}_${timestamp}.tar.gz"
     tar -zcf $bckDir/$tarName $vol
-    echo "Se ha creado el $tarName en $bckDir"
+    echo -e "\nSe ha creado el $tarName en $bckDir"
   done
 }
 
 
-while getopts ":n:av:" opt; do
+while getopts ":n:oav:" opt; do
   case $opt in
     n)
       conName=$OPTARG
       ;;
+    o)
+      onlyVol=True
+      ;;
     a)
       bckVolumes() {
         vols=$(docker inspect -f '{{ range .Mounts }}{{ .Source }} {{ end }}' $conName)
-        echo "Realizando backup de todos los volumenes montados: $vols"
+        echo "Backup de todos los volumenes montados: $vols"
         targzDir
       }
       bckVol=True
@@ -49,14 +53,13 @@ while getopts ":n:av:" opt; do
     v)
       vols=$OPTARG
       bckVolumes() {
-        echo "Realizando backup de los siguientes volumenes: $vols"
+        echo "Backup de los siguientes volumenes: $vols"
         targzDir
       }
       bckVol=True
       ;;
     \?)
-      echo "Invalid option: -$OPTARG" >&2
-      echo
+      echo -e "Invalid option: -$OPTARG \n" >&2
       usage
       exit 2
       ;;
@@ -64,8 +67,13 @@ while getopts ":n:av:" opt; do
 done
 
 if [ $conName ];then
-  echo "Container $conName seleccionado..."
-  echo
+  echo -e "Container \e[31m$conName\e[0m seleccionado...\n"
+else
+  usage
+  exit 1
+fi
+
+if [ ! $onlyVol ];then
   echo "Creando imagen del estado actual del container:"
   docker commit $conName ${conName}:$timestamp
   echo
@@ -74,8 +82,7 @@ if [ $conName ];then
   docker save --output=$bckDir/${conName}_${timestamp}.tar ${conName}:$timestamp
   gzip -9 $bckDir/${conName}_${timestamp}.tar
 else
-  usage
-  exit 1
+  echo -e "Realizando backup unicamente de los volumenes...\n"
 fi
 
 if [ $bckVol ];then bckVolumes;fi
